@@ -57,7 +57,7 @@
       dest: /etc/systemd/system/backend.service
   
   - name: daemon reloading
-    ansible.builtin.systemd_servvice:
+    ansible.builtin.systemd_service:
       name: daemon-reload 
       state: reloaded
 
