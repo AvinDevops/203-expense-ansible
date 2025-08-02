@@ -68,6 +68,13 @@
       name: mysql
       state: latest
 
+  - name: installing pip
+    ansible.builtin.pip:
+      name:
+        - PyMysql
+        - Cryptography
+      executable: pip3.9
+
   - name: loading schema
     community.mysql.mysql_db:
       login_host: "{{ login_host }}"
