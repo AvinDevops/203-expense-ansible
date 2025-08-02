@@ -1,0 +1,47 @@
+- name: configuring db server
+  hosts: db
+  become: yes
+  vars:
+    login_host: 172.31.95.239
+  vars_prompt:
+    - name: login_user
+      prompt: please enter user
+      private: no
+    - name: login_password
+      prompt: please enter password
+      private: no 
+  tasks: #list of tasks/modules/collections
+  - name: installing mysql server
+    ansible.builtin.dnf:
+      name: mysql-server
+      state: latest
+
+  - name: starting and enabiling mysql
+    ansible.builtin.service:
+      name: mysqld
+      state: started
+      enabled: yes
+
+  - name: installing pip
+    ansible.builtin.pip:
+      name:
+        - PyMysql
+        - Cryptography
+      executable: pip3.9
+
+  - name: connecting to server
+    community.mysql.mysql_info:
+      login_user: "{{ login_user }}"
+      login_password: "{{ login_password }}"
+      login_host: "{{ login_host }}"
+      filter: version
+    register: mysql_connection_output
+    ignore_errors: yes
+
+  - name: printing mysql connection 
+    ansible.builtin.debug:
+      msg: "{{ mysql_connection_output }}"
+
+  # - name: setting root password 
+  #   ansible.builtin.command: mysql_secure_installation --set-root-pass ExpenseApp@1
+  #   when:
